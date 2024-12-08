@@ -16,6 +16,8 @@ public class AvatarInfoRO {
     private String name;
     @Schema(description = "Отображаемое имя аватара")
     private String displayName;
+    @Schema(description = "Пол аватара")
+    private String gender;
     @Schema(description = "Путь до файла изображения аватара на сервере")
     private String imageFilePath;
     @Schema(description = "Изображение аватара")
@@ -47,6 +49,20 @@ public class AvatarInfoRO {
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    /**
+     * @return пол аватара
+     */
+    public String getGender() {
+        return gender;
+    }
+
+    /**
+     * @param gender пол аватара
+     */
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     /**
