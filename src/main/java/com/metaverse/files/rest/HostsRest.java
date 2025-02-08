@@ -15,6 +15,7 @@ import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.ExceptionCode;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -64,7 +65,7 @@ public class HostsRest {
     @GetMapping
     @Operation(summary = "Получить хостов указанной сцены", description = "Позволяет получить список всех хостов сцены указанной в пути запроса")
     @ApiResponse(responseCode = "200", description = "Список хостов указанной комнаты", content = @Content(schema = @Schema(implementation = SinglesceneHostsResultRO.class)))
-    public ResponseEntity<SinglesceneHostsResultRO> getHostsByScene(@RequestParam("sceneName") String sceneName) {
+    public ResponseEntity<SinglesceneHostsResultRO> getHostsByScene(@RequestParam("sceneName") @Parameter(description = "Имя сцены", required = true) String sceneName) {
         List<HostRO> hosts = hostsService.hostsByScene(sceneName);
 
         SinglesceneHostsResultRO resultRO = new SinglesceneHostsResultRO();
