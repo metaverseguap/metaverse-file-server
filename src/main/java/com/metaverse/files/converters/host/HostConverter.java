@@ -29,7 +29,8 @@ public class HostConverter extends Converter<HostModel, HostRO> {
         ro.setSceneName(host.getScene().getName());
         ro.setUri(host.getUri());
         if (!CollectionUtils.isEmpty(host.getUser())) {
-            ro.setLogin(host.getUser().get(0).getName());
+            ro.setLogin(host.getUser().get(0).getLogin());
+            ro.setName(host.getUser().get(0).getName());
         }
 
         return ro;

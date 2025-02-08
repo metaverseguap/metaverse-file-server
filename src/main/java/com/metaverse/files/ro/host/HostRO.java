@@ -13,10 +13,12 @@ public class HostRO {
 
     @Schema(description = "Uri идентификатор хоста, для подключения к нему через Mirror")
     private String uri;
-    @Schema(description = "Название файла сцены, хостом которой является создаваемый хост")
+    @Schema(description = "Название файла сцены, хостом которой является данный хост")
     private String sceneName;
     @Schema(description = "Логин пользователя являющегося хостом")
     private String login;
+    @Schema(description = "Отображаемое имя пользователя являющегося хостом")
+    private String name;
 
     /**
      * @return uri идентификатор хоста
@@ -58,5 +60,19 @@ public class HostRO {
      */
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    /**
+     * @return отображаемое имя пользователя являющегося хостом
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name отображаемое имя пользователя являющегося хостом
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }

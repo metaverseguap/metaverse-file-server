@@ -46,14 +46,18 @@ public class HostServiceImp implements HostsService {
      */
     @Override
     public Map<String, List<HostRO>> hostsGroupedByScene() {
-        List<HostModel> hosts = hostsRepository.findAll();
-        return hosts.stream()
+        List<SceneModel> scenes = sceneRepository.findAll();
+
+        return scenes.stream()
                 .collect(
                         Collectors.groupingBy(
-                                e -> e.getScene().getName(),
-                                Collectors.mapping(
-                                        host -> hostConverter.to(host),
-                                        Collectors.toList()
+                                s -> s.getName(),
+                                Collectors.flatMapping(
+                                        s -> s.getHosts().stream(),
+                                        Collectors.mapping(
+                                                host -> hostConverter.to(host),
+                                                Collectors.toList()
+                                        )
                                 )
                         )
                 );
