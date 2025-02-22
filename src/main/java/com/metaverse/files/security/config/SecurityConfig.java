@@ -1,6 +1,7 @@
 package com.metaverse.files.security.config;
 
 import com.metaverse.files.rest.AuthRest;
+import com.metaverse.files.rest.ServerStatusRest;
 import com.metaverse.files.security.jwt.JwtRequestFilter;
 import com.metaverse.files.security.service.users.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,11 +81,22 @@ public class SecurityConfig {
     }
 
     private void setupAccess(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
-        auth.requestMatchers(AuthRest.PATH + "/*").permitAll();
+        authAccess(auth);
+        serverStatusAccess(auth);
 
         swaggerAccess(auth);
 
         auth.anyRequest().authenticated();
+    }
+
+    private static void authAccess(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth.requestMatchers(AuthRest.PATH + "/*").permitAll();
+        auth.requestMatchers(AuthRest.PATH).permitAll();
+    }
+
+    private static void serverStatusAccess(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
+        auth.requestMatchers(ServerStatusRest.PATH).permitAll();
+        auth.requestMatchers(ServerStatusRest.PATH + "/*").permitAll();
     }
 
     private static void swaggerAccess(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth) {
