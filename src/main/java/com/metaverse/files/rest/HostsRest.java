@@ -3,13 +3,16 @@ package com.metaverse.files.rest;
 import java.util.List;
 import java.util.Map;
 
-import com.metaverse.files.converters.host.CreateHostRequestConverter;
+import com.metaverse.files.contexts.host.CreateHostContext;
+import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.ro.host.requests.CreateHostRequestRO;
+import com.metaverse.files.ro.host.responses.HostAddressResultRO;
 import com.metaverse.files.ro.host.responses.MultisceneHostsResultRO;
 import com.metaverse.files.ro.host.responses.SinglesceneHostsResultRO;
 import com.metaverse.files.ro.response.ResultDetailsRO;
 import com.metaverse.files.services.host.HostsService;
+import com.metaverse.files.utils.RequestUtils;
 import com.metaverse.files.utils.ResponseUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.ExceptionCode;
@@ -20,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,8 +50,6 @@ public class HostsRest {
 
     @Autowired
     private HostsService hostsService;
-    @Autowired
-    private CreateHostRequestConverter createHostRequestConverter;
 
     @GetMapping("/all")
     @Operation(summary = "Получить всех хостов", description = "Позволяет получить всех хостов сгруппированных по имени сцены, для которой они являются хостами")
@@ -78,10 +80,22 @@ public class HostsRest {
     @PostMapping("/create")
     @Operation(summary = "Создать хоста", description = "Позволяет создать хоста из авторизованного в данный момент пользователя")
     @ApiResponse(responseCode = "200", description = "Статус выполнения запроса", content = @Content(schema = @Schema(implementation = ResultDetailsRO.class)))
-    public ResponseEntity<ResultDetailsRO> create(@RequestBody CreateHostRequestRO createHostRequestRO) {
-        hostsService.create(createHostRequestConverter.from(createHostRequestRO));
+    public ResponseEntity<HostAddressResultRO> create(@RequestBody CreateHostRequestRO createHostRequestRO, HttpServletRequest request) {
+        String hostIP = RequestUtils.getClientIp(request);
 
-        return ResponseEntity.ok(ResultDetailsRO.success());
+        CreateHostContext createHostContext =
+                CreateHostContext.builder()
+                        .sceneName(createHostRequestRO.getSceneName())
+                        .hostIP(hostIP)
+                        .build();
+
+        HostAddressRO hostAddress = hostsService.create(createHostContext);
+
+        HostAddressResultRO result = new HostAddressResultRO();
+        result.setSuccess(true);
+        result.setHostAddress(hostAddress);
+
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete")

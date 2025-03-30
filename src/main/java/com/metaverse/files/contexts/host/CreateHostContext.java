@@ -8,19 +8,19 @@ package com.metaverse.files.contexts.host;
  */
 public class CreateHostContext {
 
-    private final String uri;
+    private final String hostIP;
     private final String sceneName;
 
     private CreateHostContext(CreateHostContextBuilder builder) {
-        this.uri = builder.uri;
+        this.hostIP = builder.hostIP;
         this.sceneName = builder.sceneName;
     }
 
     /**
-     * @return uri идентификатор хоста
+     * @return ip хоста
      */
-    public String getUri() {
-        return uri;
+    public String getHostIP() {
+        return hostIP;
     }
 
     /**
@@ -42,7 +42,7 @@ public class CreateHostContext {
      */
     public static class CreateHostContextBuilder {
 
-        private String uri;
+        private String hostIP;
         private String sceneName;
 
         private CreateHostContextBuilder() {
@@ -53,11 +53,11 @@ public class CreateHostContext {
         }
 
         /**
-         * @param uri uri идентификатор хоста
+         * @param hostIP ip хоста
          * @return self
          */
-        public CreateHostContextBuilder uri(String uri) {
-            this.uri = uri;
+        public CreateHostContextBuilder hostIP(String hostIP) {
+            this.hostIP = hostIP;
             return self();
         }
 

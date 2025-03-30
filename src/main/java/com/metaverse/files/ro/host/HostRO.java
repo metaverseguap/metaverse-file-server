@@ -11,8 +11,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Объект хоста")
 public class HostRO {
 
-    @Schema(description = "Uri идентификатор хоста, для подключения к нему через Mirror")
-    private String uri;
+    @Schema(description = "ip хоста, для подключения к нему через Mirror")
+    private String hostIP;
+    @Schema(description = "Порт хоста")
+    private int port;
     @Schema(description = "Название файла сцены, хостом которой является данный хост")
     private String sceneName;
     @Schema(description = "Логин пользователя являющегося хостом")
@@ -21,17 +23,32 @@ public class HostRO {
     private String name;
 
     /**
-     * @return uri идентификатор хоста
+     * @return ip хоста
      */
-    public String getUri() {
-        return uri;
+    public String getHostIP() {
+        return hostIP;
     }
 
     /**
-     * @param uri uri идентификатор хоста
+     * @param hostIP ip хоста
      */
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setHostIP(String hostIP) {
+        this.hostIP = hostIP;
+    }
+
+    /**
+     * @return порт хоста
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     *
+     * @param port порт хоста
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 
     /**

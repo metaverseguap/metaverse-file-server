@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.metaverse.files.contexts.host.CreateHostContext;
+import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
@@ -35,10 +36,11 @@ public interface HostsService {
      * Создать хоста из авторизованного пользователя.
      *
      * @param ctx {@link CreateHostContext контекст создания хоста}
+     * @return {@link HostAddressRO адрес, по которому был зарегистрирован хост}
      * @throws DataNotFoundException     если не удалось найти в БД данные для создания хоста
      * @throws UselessOperationException если данный пользователь уже является хостом
      */
-    void create(CreateHostContext ctx);
+    HostAddressRO create(CreateHostContext ctx);
 
     /**
      * Удалить хоста для авторизованного в данный момент пользователя.

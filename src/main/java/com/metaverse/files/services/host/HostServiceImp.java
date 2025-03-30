@@ -11,12 +11,14 @@ import com.metaverse.files.models.HostModel;
 import com.metaverse.files.models.SceneModel;
 import com.metaverse.files.repositories.HostsRepository;
 import com.metaverse.files.repositories.SceneRepository;
+import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.security.models.UserModel;
 import com.metaverse.files.security.repositories.UsersRepository;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ public class HostServiceImp implements HostsService {
     private SceneRepository sceneRepository;
     @Autowired
     private HostConverter hostConverter;
+
+    @Value("${client.default.port}")
+    private int defaultPort = 7777;
 
     /**
      * {@inheritDoc}
@@ -77,13 +82,22 @@ public class HostServiceImp implements HostsService {
      */
     @Override
     @Transactional
-    public void create(CreateHostContext ctx) {
+    public HostAddressRO create(CreateHostContext ctx) {
         UserModel userModel = getCurrentUser();
         SceneModel sceneFromDB = getSceneFromDB(ctx);
 
         ensureHostNotExists(userModel);
 
         saveHost(ctx, sceneFromDB, userModel);
+
+        HostAddressRO result = new HostAddressRO();
+        result.setHostIP(ctx.getHostIP());
+
+        List<HostModel> hosts = sceneFromDB.getHosts();
+        int port = defaultPort + hosts.size();
+        result.setPort(port);
+
+        return result;
     }
 
     private SceneModel getSceneFromDB(CreateHostContext ctx) {
@@ -104,9 +118,13 @@ public class HostServiceImp implements HostsService {
 
     private void saveHost(CreateHostContext ctx, SceneModel sceneFromDB, UserModel userModel) {
         HostModel hostModel = new HostModel();
-        hostModel.setUri(ctx.getUri());
+        hostModel.setHostIP(ctx.getHostIP());
         hostModel.setScene(sceneFromDB);
         hostModel.setUser(userModel);
+
+        List<HostModel> hosts = sceneFromDB.getHosts();
+        int port = defaultPort + hosts.size();
+        hostModel.setPort(port);
 
         hostsRepository.save(hostModel);
     }
