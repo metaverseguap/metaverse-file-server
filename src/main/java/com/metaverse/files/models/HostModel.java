@@ -31,8 +31,11 @@ public class HostModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "uri")
-    private String uri;
+    @Column(name = "host_ip")
+    private String hostIP;
+
+    @Column(name = "port")
+    private int port;
 
     @OneToMany(mappedBy = "hostModel", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<UserModel> userModel;
@@ -56,17 +59,31 @@ public class HostModel {
     }
 
     /**
-     * @return url
+     * @return ip хоста
      */
-    public String getUri() {
-        return uri;
+    public String getHostIP() {
+        return hostIP;
     }
 
     /**
-     * @param uri url
+     * @param hostIP ip хоста
      */
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setHostIP(String hostIP) {
+        this.hostIP = hostIP;
+    }
+
+    /**
+     * @return порт хоста
+     */
+    public int getPort() {
+        return port;
+    }
+
+    /**
+     * @param port порт хоста
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 
     /**
