@@ -86,12 +86,12 @@ public class AvatarRest {
     public ResponseEntity<ResultDetailsRO> uploadSceneFile(@RequestParam("avatar") @Parameter(description = "Файл ассета аватара", required = true) MultipartFile avatar,
                                                            @RequestParam("img") @Parameter(description = "Файл изображения аватара", required = true) MultipartFile img,
                                                            @RequestParam("displayName") @Parameter(description = "Отображаемое имя аватара", required = true) String displayName,
-                                                           @RequestParam("gender") @Parameter(description = "Пол аватара", required = true) String gender) {
+                                                           @RequestParam("animationControllerType") @Parameter(description = "Тип контроллера анимации", required = true) String animationControllerType) {
         UploadAvatarContext ctx = UploadAvatarContext.builder()
                 .image(img)
                 .avatar(avatar)
                 .displayName(displayName)
-                .gender(gender)
+                .animationControllerType(animationControllerType)
                 .build();
 
         avatarService.saveAvatar(ctx);

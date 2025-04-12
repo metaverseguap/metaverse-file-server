@@ -108,7 +108,7 @@ public class AvatarServiceImp implements AvatarService {
         AvatarModel avatarModel = new AvatarModel();
         avatarModel.setName(ctx.getAvatar().getOriginalFilename());
         avatarModel.setDisplayName(ctx.getDisplayName());
-        avatarModel.setGender(ctx.getGender());
+        avatarModel.setAnimationControllerType(ctx.getAnimationControllerType());
         avatarModel.setFilePath(avatarFullName.toString());
         avatarModel.setImageFilePath(imageFullName.toString());
 
