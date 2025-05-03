@@ -12,13 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadAvatarContext {
 
     private final String displayName;
-    private final String gender;
+    private final String animationControllerType;
     private final MultipartFile avatar;
     private final MultipartFile image;
 
     private UploadAvatarContext(UploadAvatarContextBuilder builder) {
         this.displayName = builder.displayName;
-        this.gender = builder.gender;
+        this.animationControllerType = builder.animationControllerType;
         this.avatar = builder.avatar;
         this.image = builder.image;
     }
@@ -31,10 +31,10 @@ public class UploadAvatarContext {
     }
 
     /**
-     * @return пол аватара
+     * @return тип контроллера анимации
      */
-    public String getGender() {
-        return gender;
+    public String getAnimationControllerType() {
+        return animationControllerType;
     }
 
     /**
@@ -82,7 +82,7 @@ public class UploadAvatarContext {
     public static class UploadAvatarContextBuilder {
 
         private String displayName;
-        private String gender;
+        private String animationControllerType;
         private MultipartFile avatar;
         private MultipartFile image;
 
@@ -103,11 +103,11 @@ public class UploadAvatarContext {
         }
 
         /**
-         * @param gender пол аватара
+         * @param animationControllerType тип контроллера анимации
          * @return self
          */
-        public UploadAvatarContextBuilder gender(String gender) {
-            this.gender = gender;
+        public UploadAvatarContextBuilder animationControllerType(String animationControllerType) {
+            this.animationControllerType = animationControllerType;
             return self();
         }
 

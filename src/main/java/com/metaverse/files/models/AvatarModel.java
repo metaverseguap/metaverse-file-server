@@ -29,8 +29,8 @@ public class AvatarModel {
     @Column(name = "display_name")
     private String displayName;
 
-    @Column(name = "gender")
-    private String gender;
+    @Column(name = "animation_controller_type")
+    private String animationControllerType;
 
     @Column(name = "file_path")
     private String filePath;
@@ -81,17 +81,17 @@ public class AvatarModel {
     }
 
     /**
-     * @return пол аватара
+     * @return тип контроллера анимации
      */
-    public String getGender() {
-        return gender;
+    public String getAnimationControllerType() {
+        return animationControllerType;
     }
 
     /**
-     * @param gender пол аватара
+     * @param animationControllerType тип контроллера анимации
      */
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setAnimationControllerType(String animationControllerType) {
+        this.animationControllerType = animationControllerType;
     }
 
     /**

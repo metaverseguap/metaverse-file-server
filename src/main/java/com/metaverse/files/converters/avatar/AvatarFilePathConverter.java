@@ -28,7 +28,7 @@ public class AvatarFilePathConverter extends Converter<AvatarModel, AvatarFilePa
         AvatarFilePathRO ro = new AvatarFilePathRO();
 
         ro.setName(model.getName());
-        ro.setGender(model.getGender());
+        ro.setAnimationControllerType(model.getAnimationControllerType());
         ro.setFilePath(model.getFilePath());
 
         return ro;
