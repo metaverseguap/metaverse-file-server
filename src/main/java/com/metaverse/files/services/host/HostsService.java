@@ -8,6 +8,7 @@ import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
+import org.springframework.lang.Nullable;
 
 /**
  * Сервис хостов.
@@ -31,6 +32,15 @@ public interface HostsService {
      * @return список хостов указанной сцены
      */
     List<HostRO> hostsByScene(String sceneName);
+
+    /**
+     * Получить информацию о хосте.
+     *
+     * @param login логин хоста
+     * @return информация о хосте или null, если хоста с таким логином не существует
+     */
+    @Nullable
+    HostRO hostByLogin(String login);
 
     /**
      * Создать хоста из авторизованного пользователя.
