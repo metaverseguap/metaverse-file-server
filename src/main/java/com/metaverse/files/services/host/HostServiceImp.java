@@ -19,6 +19,7 @@ import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,19 @@ public class HostServiceImp implements HostsService {
     public List<HostRO> hostsByScene(String sceneName) {
         List<HostModel> hosts = hostsRepository.findAllBySceneModelName(sceneName);
         return hostConverter.to(hosts);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nullable
+    @Override
+    public HostRO hostByLogin(String login) {
+        Optional<HostModel> host = hostsRepository.findByUserModelLogin(login);
+
+        return host
+                .map(hostModel -> hostConverter.to(hostModel))
+                .orElse(null);
     }
 
     /**

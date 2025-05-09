@@ -8,6 +8,7 @@ import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.ro.host.requests.CreateHostRequestRO;
 import com.metaverse.files.ro.host.responses.HostAddressResultRO;
+import com.metaverse.files.ro.host.responses.HostResultRO;
 import com.metaverse.files.ro.host.responses.MultisceneHostsResultRO;
 import com.metaverse.files.ro.host.responses.SinglesceneHostsResultRO;
 import com.metaverse.files.ro.response.ResultDetailsRO;
@@ -72,6 +73,19 @@ public class HostsRest {
 
         SinglesceneHostsResultRO resultRO = new SinglesceneHostsResultRO();
         resultRO.setHosts(hosts);
+        resultRO.setSuccess(true);
+
+        return ResponseEntity.ok(resultRO);
+    }
+
+    @GetMapping("/info")
+    @Operation(summary = "Получить данные хоста по логину", description = "Позволяет получить данные хоста по его логину, если пользователь с данным логином является хостом")
+    @ApiResponse(responseCode = "200", description = "Информация о хосте", content = @Content(schema = @Schema(implementation = HostResultRO.class)))
+    public ResponseEntity<HostResultRO> getHostsByLogin(@RequestParam("login") @Parameter(description = "Логин хоста", required = true) String login) {
+        HostRO host = hostsService.hostByLogin(login);
+
+        HostResultRO resultRO = new HostResultRO();
+        resultRO.setHost(host);
         resultRO.setSuccess(true);
 
         return ResponseEntity.ok(resultRO);
