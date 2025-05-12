@@ -7,7 +7,7 @@ import com.metaverse.files.converters.auth.RegistrationRequestConverter;
 import com.metaverse.files.ro.auth.requests.LoginRequestRO;
 import com.metaverse.files.ro.auth.requests.RegistrationRequestRO;
 import com.metaverse.files.ro.auth.responses.AuthResultRO;
-import com.metaverse.files.ro.response.details.ErrorDetailsRO;
+import com.metaverse.files.ro.responses.details.ErrorDetailsRO;
 import com.metaverse.files.services.auth.AuthService;
 import com.metaverse.files.utils.exceptions.AuthException;
 import com.metaverse.files.utils.exceptions.ExceptionCode;

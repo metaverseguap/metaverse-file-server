@@ -1,9 +1,11 @@
 package com.metaverse.files.services.host;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import com.metaverse.files.contexts.host.CreateHostContext;
 import com.metaverse.files.converters.host.HostConverter;
@@ -15,13 +17,13 @@ import com.metaverse.files.ro.host.HostAddressRO;
 import com.metaverse.files.ro.host.HostRO;
 import com.metaverse.files.security.models.UserModel;
 import com.metaverse.files.security.repositories.UsersRepository;
+import com.metaverse.files.security.utils.SecurityUtils;
+import com.metaverse.files.services.user.UserStatusService;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class HostServiceImp implements HostsService {
+public class HostServiceImpl implements HostsService {
 
+    @Autowired
+    private UserStatusService userStatusService;
     @Autowired
     private HostsRepository hostsRepository;
     @Autowired
@@ -50,52 +54,75 @@ public class HostServiceImp implements HostsService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public Map<String, List<HostRO>> hostsGroupedByScene() {
+        Set<String> activeUsers = userStatusService.activeUsersLogins();
         List<SceneModel> scenes = sceneRepository.findAll();
 
-        return scenes.stream()
-                .collect(
-                        Collectors.groupingBy(
-                                s -> s.getName(),
-                                Collectors.flatMapping(
-                                        s -> s.getHosts().stream(),
-                                        Collectors.mapping(
-                                                host -> hostConverter.to(host),
-                                                Collectors.toList()
-                                        )
-                                )
-                        )
-                );
+        Map<String, List<HostRO>> hostsGroupedByScene = new HashMap<>();
+
+        for (SceneModel scene : scenes) {
+            List<HostRO> hosts = getActiveHosts(scene.getHosts(), activeUsers);
+            hostsGroupedByScene.put(scene.getName(), hosts);
+        }
+
+        return hostsGroupedByScene;
+    }
+
+    private List<HostRO> getActiveHosts(List<HostModel> hosts, Set<String> activeUsers) {
+        List<HostRO> result = new ArrayList<>();
+        for (var host : hosts) {
+            UserModel user = host.getUser().get(0);
+            if (activeUsers.contains(user.getLogin())) {
+                result.add(hostConverter.to(host));
+            } else {
+                hostsRepository.delete(host);
+            }
+        }
+
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public List<HostRO> hostsByScene(String sceneName) {
+        Set<String> activeUsers = userStatusService.activeUsersLogins();
         List<HostModel> hosts = hostsRepository.findAllBySceneModelName(sceneName);
-        return hostConverter.to(hosts);
+        return getActiveHosts(hosts, activeUsers);
     }
 
     /**
      * {@inheritDoc}
      */
     @Nullable
+    @Transactional
     @Override
     public HostRO hostByLogin(String login) {
         Optional<HostModel> host = hostsRepository.findByUserModelLogin(login);
+        if (host.isEmpty()) {
+            return null;
+        }
 
-        return host
-                .map(hostModel -> hostConverter.to(hostModel))
-                .orElse(null);
+        HostModel hostModel = host.get();
+        UserModel user = hostModel.getUser().get(0);
+        boolean isUserActive = userStatusService.activeUsersLogins().contains(user.getLogin());
+        if (!isUserActive) {
+            hostsRepository.delete(hostModel);
+            return null;
+        }
+
+        return hostConverter.to(hostModel);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public HostAddressRO create(CreateHostContext ctx) {
         UserModel userModel = getCurrentUser();
         SceneModel sceneFromDB = getSceneFromDB(ctx);
@@ -146,8 +173,8 @@ public class HostServiceImp implements HostsService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete() {
         HostModel currentHost = getHostFromDB();
 
@@ -165,8 +192,7 @@ public class HostServiceImp implements HostsService {
     }
 
     private UserModel getCurrentUser() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String login = (String) securityContext.getAuthentication().getPrincipal();
+        String login = SecurityUtils.getAuthenticatedUserLogin();
 
         return usersRepository.findByLogin(login).get();
     }

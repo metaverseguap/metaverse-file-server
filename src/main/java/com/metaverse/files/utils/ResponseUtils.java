@@ -3,9 +3,9 @@ package com.metaverse.files.utils;
 
 import java.util.Collections;
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
-import com.metaverse.files.ro.response.details.ErrorDetailsRO;
-import com.metaverse.files.ro.response.details.InfoDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
+import com.metaverse.files.ro.responses.details.ErrorDetailsRO;
+import com.metaverse.files.ro.responses.details.InfoDetailsRO;
 
 /**
  * Часто используемые методы в работе с ответами на запросы в REST.

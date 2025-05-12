@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class RegistrationKeyServiceImp implements RegistrationKeyService {
+public class RegistrationKeyServiceImpl implements RegistrationKeyService {
 
     @Autowired
     private RegistrationKeyRepository regKeyRepository;
@@ -50,8 +50,8 @@ public class RegistrationKeyServiceImp implements RegistrationKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void create(RegistrationKeyRO regKey) {
         ensureKey(regKey);
 
@@ -112,8 +112,8 @@ public class RegistrationKeyServiceImp implements RegistrationKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(int id) {
         RegistrationKeyModel keyFromDB = getKeyFromDB(id);
 
@@ -123,8 +123,8 @@ public class RegistrationKeyServiceImp implements RegistrationKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> keys) {
         regKeyRepository.deleteAllByKeyIn(keys);
     }

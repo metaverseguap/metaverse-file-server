@@ -1,4 +1,4 @@
-package com.metaverse.files.ro.response.details;
+package com.metaverse.files.ro.responses.details;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

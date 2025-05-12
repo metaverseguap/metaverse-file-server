@@ -1,7 +1,7 @@
 package com.metaverse.files.rest;
 
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

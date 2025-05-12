@@ -38,8 +38,8 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void update(List<PermissionRO> permissions) {
         List<PermissionModel> permissionModels = permissionConverter.from(permissions);
 
@@ -49,8 +49,8 @@ public class PermissionServiceImpl implements PermissionService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> permissions) {
         permissionRepository.deleteAllByNameIn(permissions);
     }

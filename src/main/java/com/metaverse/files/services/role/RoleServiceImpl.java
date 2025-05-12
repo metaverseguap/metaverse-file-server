@@ -17,10 +17,9 @@ import com.metaverse.files.ro.role.PermissionRO;
 import com.metaverse.files.ro.role.RoleRO;
 import com.metaverse.files.security.models.UserModel;
 import com.metaverse.files.security.repositories.UsersRepository;
+import com.metaverse.files.security.utils.SecurityUtils;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class RoleServiceImp implements RoleService {
+public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private RoleRepository roleRepository;
@@ -66,8 +65,7 @@ public class RoleServiceImp implements RoleService {
     }
 
     private UserModel getCurrentUser() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String login = (String) securityContext.getAuthentication().getPrincipal();
+        String login = SecurityUtils.getAuthenticatedUserLogin();
 
         return usersRepository.findByLogin(login).get();
     }
@@ -75,8 +73,8 @@ public class RoleServiceImp implements RoleService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void update(RoleRO roleRO) {
         RoleModel role = getRoleModel(roleRO);
 
@@ -108,8 +106,8 @@ public class RoleServiceImp implements RoleService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void update(List<RoleRO> roles) {
         List<RoleModel> list = roles.stream()
                 .map(this::getRoleModel)
@@ -168,8 +166,8 @@ public class RoleServiceImp implements RoleService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(int id) {
         RoleModel roleFromDB = getKeyFromDB(id);
         roleRepository.delete(roleFromDB);
@@ -188,8 +186,8 @@ public class RoleServiceImp implements RoleService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> roleNames) {
         roleRepository.deleteAllByNameIn(roleNames);
     }

@@ -3,7 +3,7 @@ package com.metaverse.files.ro.regkey.responses;
 import java.util.List;
 
 import com.metaverse.files.ro.regkey.RegistrationKeyRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

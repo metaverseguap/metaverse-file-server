@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class AvatarServiceImp implements AvatarService {
+public class AvatarServiceImpl implements AvatarService {
 
     @Autowired
     private AvatarRepository avatarRepository;
@@ -67,8 +67,8 @@ public class AvatarServiceImp implements AvatarService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void saveAvatar(UploadAvatarContext ctx) {
         ensureAvatar(ctx);
         ensureImage(ctx);
@@ -118,8 +118,8 @@ public class AvatarServiceImp implements AvatarService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(int id) {
         AvatarModel avatarFromDB = getAvatarFromDB(id);
 
@@ -146,8 +146,8 @@ public class AvatarServiceImp implements AvatarService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> avatarNames) {
         List<AvatarModel> avatarsFromDB = avatarRepository.findAllByNameIn(avatarNames);
         for (AvatarModel avatarFromDB : avatarsFromDB) {

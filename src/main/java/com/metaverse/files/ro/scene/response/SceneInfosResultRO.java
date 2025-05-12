@@ -3,7 +3,7 @@ package com.metaverse.files.ro.scene.response;
 
 import java.util.List;
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 

@@ -1,10 +1,10 @@
-package com.metaverse.files.ro.avatar.response;
+package com.metaverse.files.ro.avatar.responses;
 
 
 import java.util.List;
 
 import com.metaverse.files.ro.avatar.AvatarInfoRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

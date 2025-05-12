@@ -11,7 +11,7 @@ import com.metaverse.files.ro.host.responses.HostAddressResultRO;
 import com.metaverse.files.ro.host.responses.HostResultRO;
 import com.metaverse.files.ro.host.responses.MultisceneHostsResultRO;
 import com.metaverse.files.ro.host.responses.SinglesceneHostsResultRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.services.host.HostsService;
 import com.metaverse.files.utils.RequestUtils;
 import com.metaverse.files.utils.ResponseUtils;

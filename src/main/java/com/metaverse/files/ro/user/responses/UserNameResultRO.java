@@ -1,6 +1,6 @@
 package com.metaverse.files.ro.user.responses;
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class LoginKeyServiceImp implements LoginKeyService {
+public class LoginKeyServiceImpl implements LoginKeyService {
 
     @Autowired
     private LoginKeyRepository loginKeyRepository;
@@ -41,8 +41,8 @@ public class LoginKeyServiceImp implements LoginKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void create(LoginKeyRO loginKeyRO) {
         ensureKey(loginKeyRO);
         saveKey(loginKeyRO);
@@ -71,8 +71,8 @@ public class LoginKeyServiceImp implements LoginKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(int id) {
         LoginKeyModel keyFromDB = getKeyFromDB(id);
         loginKeyRepository.delete(keyFromDB);
@@ -81,8 +81,8 @@ public class LoginKeyServiceImp implements LoginKeyService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> keys) {
         loginKeyRepository.deleteAllByKeyIn(keys);
     }

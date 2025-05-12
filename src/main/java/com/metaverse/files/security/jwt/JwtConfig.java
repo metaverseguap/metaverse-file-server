@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
 
+import com.metaverse.files.utils.TimeUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -47,7 +48,7 @@ public class JwtConfig {
 
         Map<String, Object> claims = getClaimsFromUser(userDetails);
 
-        Date creationDate = new Date();
+        Date creationDate = TimeUtils.dateNow();
         Date expiredDate = new Date(creationDate.getTime() + TimeUnit.DAYS.toMillis(tokenExpirationAfterDays));
 
         return Jwts.builder()
