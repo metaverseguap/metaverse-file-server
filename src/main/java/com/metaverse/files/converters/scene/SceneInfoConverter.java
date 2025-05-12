@@ -38,6 +38,7 @@ public class SceneInfoConverter extends Converter<SceneModel, SceneInfoRO> {
 
         Path imagePath = Paths.get(model.getImageFilePath()).normalize();
         ro.setImageData(FIleUtils.getBytesFromFile(imagePath.toFile()));
+        ro.setUpdateDate(model.getUpdateDate());
 
         return ro;
     }

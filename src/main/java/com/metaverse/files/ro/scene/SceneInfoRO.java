@@ -1,5 +1,7 @@
 package com.metaverse.files.ro.scene;
 
+import java.util.Date;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -23,6 +25,8 @@ public class SceneInfoRO {
     private String imageFilePath;
     @Schema(description = "Изображение сцены")
     private byte[] imageData;
+    @Schema(description = "Дата обновления файла")
+    private Date updateDate;
 
     /**
      * @return индекс сортировки сцены
@@ -106,5 +110,19 @@ public class SceneInfoRO {
      */
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
+    }
+
+    /**
+     * @return дата обновления файла
+     */
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * @param updateDate дата обновления файла
+     */
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

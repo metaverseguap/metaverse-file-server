@@ -1,6 +1,8 @@
 package com.metaverse.files.models;
 
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,9 @@ public class AvatarModel {
 
     @Column(name = "image_file_path")
     private String imageFilePath;
+
+    @Column(name = "update_date")
+    private Date updateDate;
 
     /**
      * @return id
@@ -120,5 +125,19 @@ public class AvatarModel {
      */
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+    }
+
+    /**
+     * @return дата обновления файла
+     */
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * @param updateDate дата обновления файла
+     */
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }

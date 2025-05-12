@@ -26,6 +26,15 @@ public interface SceneService {
     List<SceneInfoRO> getAllInfo();
 
     /**
+     * Получить информацию о сцене по имени.
+     *
+     * @param name имя сцены
+     * @return информация о сцене
+     * @throws DataNotFoundException если сцена с таким именем не была найдена в БД
+     */
+    SceneInfoRO getSceneInfoByName(String name);
+
+    /**
      * Получить сцену по имени.
      *
      * @param name имя сцены
