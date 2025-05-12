@@ -1,10 +1,11 @@
 package com.metaverse.files.rest;
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.user.UserRO;
 import com.metaverse.files.ro.user.responses.UserInfoResultRO;
 import com.metaverse.files.ro.user.responses.UserNameResultRO;
 import com.metaverse.files.services.user.UserService;
+import com.metaverse.files.services.user.UserStatusService;
 import com.metaverse.files.utils.ResponseUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.ExceptionCode;
@@ -37,6 +38,8 @@ public class UserRest {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserStatusService userStatusService;
 
     @GetMapping("/username-by-login")
     @Operation(summary = "Получить имя пользователя по логину", description = "Позволяет получить отображаемое имя пользователя по его логину")
@@ -75,6 +78,15 @@ public class UserRest {
         userInfo.setSuccess(true);
 
         return ResponseEntity.ok(userInfo);
+    }
+
+    @GetMapping("/update-status")
+    @Operation(summary = "Обновить статус пользователя", description = "Обновляет статус пользователя, отправившего запрос")
+    @ApiResponse(responseCode = "200", description = "Статус выполнения запроса", content = @Content(schema = @Schema(implementation = ResultDetailsRO.class)))
+    public ResponseEntity<ResultDetailsRO> deleteByNames() {
+        userStatusService.updateUserStatus();
+
+        return ResponseEntity.ok(ResultDetailsRO.success());
     }
 
     @ExceptionHandler

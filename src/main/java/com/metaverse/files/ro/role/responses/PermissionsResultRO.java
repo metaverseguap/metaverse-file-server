@@ -3,7 +3,7 @@ package com.metaverse.files.ro.role.responses;
 
 import java.util.List;
 
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.role.PermissionRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 

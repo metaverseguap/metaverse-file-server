@@ -1,11 +1,11 @@
-package com.metaverse.files.ro.response;
+package com.metaverse.files.ro.responses;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.metaverse.files.ro.response.details.ErrorDetailsRO;
-import com.metaverse.files.ro.response.details.InfoDetailsRO;
+import com.metaverse.files.ro.responses.details.ErrorDetailsRO;
+import com.metaverse.files.ro.responses.details.InfoDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class SceneServiceImp implements SceneService {
+public class SceneServiceImpl implements SceneService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SceneServiceImp.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SceneServiceImpl.class);
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -71,8 +71,8 @@ public class SceneServiceImp implements SceneService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void saveScene(UploadSceneContext ctx) {
         ensureScene(ctx);
         ensureImage(ctx);
@@ -123,8 +123,8 @@ public class SceneServiceImp implements SceneService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(int id) {
 
         SceneModel sceneFromDB = getSceneFromDB(id);
@@ -152,8 +152,8 @@ public class SceneServiceImp implements SceneService {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public void delete(List<String> sceneNames) {
         List<SceneModel> scenesFromDB = sceneRepository.findAllByNameIn(sceneNames);
         for (SceneModel sceneFromDB : scenesFromDB) {

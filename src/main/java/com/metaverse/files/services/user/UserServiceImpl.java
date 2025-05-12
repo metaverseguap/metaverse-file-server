@@ -6,10 +6,9 @@ import com.metaverse.files.converters.user.UserConverter;
 import com.metaverse.files.ro.user.UserRO;
 import com.metaverse.files.security.models.UserModel;
 import com.metaverse.files.security.repositories.UsersRepository;
+import com.metaverse.files.security.utils.SecurityUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersRepository usersRepository;
@@ -59,8 +58,7 @@ public class UserServiceImp implements UserService {
     }
 
     private UserModel getAuthUser() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        String login = (String) securityContext.getAuthentication().getPrincipal();
+        String login = SecurityUtils.getAuthenticatedUserLogin();
 
         return usersRepository.findByLogin(login).get();
     }

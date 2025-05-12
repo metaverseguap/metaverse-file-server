@@ -2,7 +2,7 @@ package com.metaverse.files.ro.host.responses;
 
 
 import com.metaverse.files.ro.host.HostRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**

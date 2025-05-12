@@ -2,8 +2,8 @@ package com.metaverse.files.rest;
 
 import java.util.List;
 
-import com.metaverse.files.ro.request.DeleteByNamesRequestRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.requests.DeleteByNamesRequestRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.role.PermissionRO;
 import com.metaverse.files.ro.role.RoleRO;
 import com.metaverse.files.ro.role.SecurityRoleRO;

@@ -13,7 +13,9 @@ import com.metaverse.files.security.models.RegistrationKeyModel;
 import com.metaverse.files.security.models.UserModel;
 import com.metaverse.files.security.repositories.UsersRepository;
 import com.metaverse.files.security.types.SecurityUserDetails;
+import com.metaverse.files.services.user.UserStatusService;
 import com.metaverse.files.utils.StringUtils;
+import com.metaverse.files.utils.TimeUtils;
 import com.metaverse.files.utils.exceptions.AuthException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,8 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional(readOnly = true)
-public class AuthServiceImp implements AuthService {
+public class AuthServiceImpl implements AuthService {
 
+    @Autowired
+    private UserStatusService userStatusService;
     @Autowired
     private UsersRepository usersRepository;
     @Autowired
@@ -53,6 +57,8 @@ public class AuthServiceImp implements AuthService {
         }
 
         ensurePassword(ctx, user);
+
+        ensureUserNotActive(user);
 
         return jwt.generateToken(new SecurityUserDetails(user));
     }
@@ -82,7 +88,7 @@ public class AuthServiceImp implements AuthService {
     }
 
     private static void ensureValidityRage(LoginKeyModel regKey) {
-        Date now = new Date();
+        Date now = TimeUtils.dateNow();
         if (regKey.getDateFrom().after(now)) {
             throw new AuthException("The key's validity period has not yet begun");
         }
@@ -98,11 +104,17 @@ public class AuthServiceImp implements AuthService {
         }
     }
 
+    private void ensureUserNotActive(UserModel user) {
+        if (userStatusService.activeUsersLogins().contains(user.getLogin())) {
+            throw new AuthException(String.format("User [%s] is already logged in", user.getLogin()));
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
-    @Override
     @Transactional
+    @Override
     public String registration(RegistrationContext ctx) {
         ensureLogin(ctx);
 
@@ -159,7 +171,7 @@ public class AuthServiceImp implements AuthService {
     }
 
     private static void ensureValidityRange(RegistrationKeyModel regKey) {
-        Date now = new Date();
+        Date now = TimeUtils.dateNow();
         if (regKey.getDateFrom().after(now)) {
             throw new AuthException("The registration key's validity period has not yet begun");
         }

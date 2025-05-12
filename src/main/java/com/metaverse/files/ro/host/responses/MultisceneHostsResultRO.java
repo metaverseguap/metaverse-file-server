@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.metaverse.files.ro.host.HostRO;
-import com.metaverse.files.ro.response.ResultDetailsRO;
+import com.metaverse.files.ro.responses.ResultDetailsRO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
