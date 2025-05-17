@@ -55,11 +55,15 @@ public class SceneServiceImpl implements SceneService {
      */
     private final ConcurrentHashMap<String, Date> sceneUpdates = new ConcurrentHashMap<>();
 
+    private boolean isSceneUpdatesInitialized = false;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public List<SceneUpdateInfoRO> getUpdateInfos() {
+        ensureSceneUpdatesInitialized();
+
         List<SceneUpdateInfoRO> updateInfos = new ArrayList<>();
         for (var sceneUpdate : sceneUpdates.entrySet()) {
             SceneUpdateInfoRO updateInfo = new SceneUpdateInfoRO();
@@ -157,6 +161,7 @@ public class SceneServiceImpl implements SceneService {
         sceneModel.setImageFilePath(imageFullName.toString());
         sceneModel.setSortIndex(ctx.getSortIndex());
         sceneModel.setUpdateDate(TimeUtils.dateNow());
+        ensureSceneUpdatesInitialized();
         sceneUpdates.put(sceneModel.getName(), sceneModel.getUpdateDate());
 
         sceneRepository.save(sceneModel);
@@ -173,7 +178,9 @@ public class SceneServiceImpl implements SceneService {
 
         deleteFilesFromDisk(sceneFromDB);
 
+        ensureSceneUpdatesInitialized();
         sceneUpdates.remove(sceneFromDB.getName());
+
         sceneRepository.delete(sceneFromDB);
     }
 
@@ -198,6 +205,7 @@ public class SceneServiceImpl implements SceneService {
     @Transactional
     @Override
     public void delete(List<String> sceneNames) {
+        ensureSceneUpdatesInitialized();
         List<SceneModel> scenesFromDB = sceneRepository.findAllByNameIn(sceneNames);
         for (SceneModel sceneFromDB : scenesFromDB) {
             deleteFilesFromDisk(sceneFromDB);
@@ -205,5 +213,20 @@ public class SceneServiceImpl implements SceneService {
         }
 
         sceneRepository.deleteAll(scenesFromDB);
+    }
+
+    private void ensureSceneUpdatesInitialized() {
+        if (isSceneUpdatesInitialized) {
+            return;
+        }
+
+        LOGGER.info("Initializing scene updates...");
+
+        List<SceneInfoRO> allInfo = getAllInfo();
+        for (SceneInfoRO scene : allInfo) {
+            sceneUpdates.put(scene.getName(), scene.getUpdateDate());
+        }
+
+        isSceneUpdatesInitialized = true;
     }
 }
