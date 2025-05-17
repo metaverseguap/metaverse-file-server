@@ -8,8 +8,10 @@ import com.metaverse.files.ro.requests.DeleteByNamesRequestRO;
 import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.scene.SceneFilePathRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
+import com.metaverse.files.ro.scene.SceneUpdateInfoRO;
 import com.metaverse.files.ro.scene.response.SceneInfoResultRO;
 import com.metaverse.files.ro.scene.response.SceneInfosResultRO;
+import com.metaverse.files.ro.scene.response.SceneUpdateInfosResultRO;
 import com.metaverse.files.services.scene.SceneService;
 import com.metaverse.files.utils.FIleUtils;
 import com.metaverse.files.utils.ResponseUtils;
@@ -64,13 +66,31 @@ public class ScenesRest {
     }
 
     @GetMapping("/all-info")
-    @Operation(summary = "Получить список с информацией о сценах", description = "Позволяет список содержащий информацию о всех сценах файлового сервера")
+    @Operation(summary = "Получить список с информацией о сценах", description = "Позволяет получить список содержащий информацию о всех сценах файлового сервера")
     @ApiResponse(responseCode = "200", description = "Список список с информацией о всех сценах", content = @Content(schema = @Schema(implementation = SceneInfosResultRO.class)))
     public ResponseEntity<SceneInfosResultRO> getAllInfo() {
         List<SceneInfoRO> scenes = sceneService.getAllInfo();
 
         SceneInfosResultRO result = new SceneInfosResultRO();
         result.setInfoList(scenes);
+        result.setSuccess(true);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/all-updates")
+    @Operation(
+            summary = "Получить список с информацией о обновлении файлов сцен",
+            description = "Позволяет получить список содержащий информацию о датах обновления файлов сцен. "
+                    + "Данный endpoint не обращается к БД, так что через него можно узнать нужно ли запрашивать информацию о сцене, не нагружая БД."
+                    + "Стоит использовать следующим образом: запросили информацию об обновлениях, если файлы на сервере более новые, то запросите файлы через endpoint `/api/scenes/all-info`."
+    )
+    @ApiResponse(responseCode = "200", description = "Список список с информацией о датах обновления файлов сцен", content = @Content(schema = @Schema(implementation = SceneUpdateInfosResultRO.class)))
+    public ResponseEntity<SceneUpdateInfosResultRO> getAllUpdates() {
+        List<SceneUpdateInfoRO> updateInfos = sceneService.getUpdateInfos();
+
+        SceneUpdateInfosResultRO result = new SceneUpdateInfosResultRO();
+        result.setUpdateInfos(updateInfos);
         result.setSuccess(true);
 
         return ResponseEntity.ok(result);
