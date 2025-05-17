@@ -8,6 +8,7 @@ import com.metaverse.files.ro.requests.DeleteByNamesRequestRO;
 import com.metaverse.files.ro.responses.ResultDetailsRO;
 import com.metaverse.files.ro.scene.SceneFilePathRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
+import com.metaverse.files.ro.scene.response.SceneInfoResultRO;
 import com.metaverse.files.ro.scene.response.SceneInfosResultRO;
 import com.metaverse.files.services.scene.SceneService;
 import com.metaverse.files.utils.FIleUtils;
@@ -54,7 +55,7 @@ public class ScenesRest {
     private SceneService sceneService;
 
     @GetMapping("/file/{name}")
-    @Operation(summary = "Получить сцену по имени", description = "Позволяет получить сцену по имени")
+    @Operation(summary = "Получить сцену по имени", description = "Позволяет получить файл сцены по имени")
     public void uploadScene(@PathVariable("name") @Parameter(description = "Название файла сцены", required = true) String name, HttpServletResponse response) {
         SceneFilePathRO scene = sceneService.getSceneByName(name);
 
@@ -70,6 +71,19 @@ public class ScenesRest {
 
         SceneInfosResultRO result = new SceneInfosResultRO();
         result.setInfoList(scenes);
+        result.setSuccess(true);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/info/{name}")
+    @Operation(summary = "Получить информацию о сцене по имени", description = "Позволяет получить информацию о сцене по ее имени")
+    @ApiResponse(responseCode = "200", description = "Информация о сцене", content = @Content(schema = @Schema(implementation = SceneInfoResultRO.class)))
+    public ResponseEntity<SceneInfoResultRO> getInfo(@PathVariable("name") @Parameter(description = "Имя сцены", required = true) String name) {
+        SceneInfoRO scene = sceneService.getSceneInfoByName(name);
+
+        SceneInfoResultRO result = new SceneInfoResultRO();
+        result.setSceneInfo(scene);
         result.setSuccess(true);
 
         return ResponseEntity.ok(result);

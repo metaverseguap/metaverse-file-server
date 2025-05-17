@@ -35,6 +35,7 @@ public class AvatarInfoConverter extends Converter<AvatarModel, AvatarInfoRO> {
         ro.setDisplayName(model.getDisplayName());
         ro.setAnimationControllerType(model.getAnimationControllerType());
         ro.setImageFilePath(model.getImageFilePath());
+        ro.setUpdateDate(model.getUpdateDate());
 
         Path imagePath = Paths.get(model.getImageFilePath()).normalize();
         ro.setImageData(FIleUtils.getBytesFromFile(imagePath.toFile()));

@@ -1,6 +1,7 @@
 package com.metaverse.files.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -45,6 +46,9 @@ public class SceneModel {
 
     @Column(name = "image_file_path")
     private String imageFilePath;
+
+    @Column(name = "update_date")
+    private Date updateDate;
 
     @OneToMany(mappedBy = "sceneModel", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<HostModel> hostModels;
@@ -145,6 +149,20 @@ public class SceneModel {
      */
     public void setImageFilePath(String imageFilePath) {
         this.imageFilePath = imageFilePath;
+    }
+
+    /**
+     * @return дата обновления файла
+     */
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * @param updateDate дата обновления файла
+     */
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     /**

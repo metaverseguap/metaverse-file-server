@@ -13,6 +13,7 @@ import com.metaverse.files.repositories.SceneRepository;
 import com.metaverse.files.ro.scene.SceneFilePathRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
 import com.metaverse.files.utils.FIleUtils;
+import com.metaverse.files.utils.TimeUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.InvalidRequestStateException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
@@ -58,14 +59,28 @@ public class SceneServiceImpl implements SceneService {
      * {@inheritDoc}
      */
     @Override
+    public SceneInfoRO getSceneInfoByName(String name) {
+        SceneModel sceneModel = getSceneModel(name);
+        return sceneInfoConverter.to(sceneModel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public SceneFilePathRO getSceneByName(String name) {
+        SceneModel sceneModel = getSceneModel(name);
+        return sceneConverter.to(sceneModel);
+    }
+
+    private SceneModel getSceneModel(String name) {
         Optional<SceneModel> scene = sceneRepository.findByName(name);
         if (scene.isEmpty()) {
             String message = String.format("The scene with name [%s] does not exist", name);
             throw new DataNotFoundException(message);
         }
 
-        return sceneConverter.to(scene.get());
+        return scene.get();
     }
 
     /**
@@ -116,6 +131,7 @@ public class SceneServiceImpl implements SceneService {
         sceneModel.setFilePath(sceneFullName.toString());
         sceneModel.setImageFilePath(imageFullName.toString());
         sceneModel.setSortIndex(ctx.getSortIndex());
+        sceneModel.setUpdateDate(TimeUtils.dateNow());
 
         sceneRepository.save(sceneModel);
     }

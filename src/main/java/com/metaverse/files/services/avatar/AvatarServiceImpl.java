@@ -13,6 +13,7 @@ import com.metaverse.files.repositories.AvatarRepository;
 import com.metaverse.files.ro.avatar.AvatarInfoRO;
 import com.metaverse.files.ro.avatar.AvatarFilePathRO;
 import com.metaverse.files.utils.FIleUtils;
+import com.metaverse.files.utils.TimeUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.InvalidRequestStateException;
 import com.metaverse.files.utils.exceptions.UselessOperationException;
@@ -111,6 +112,7 @@ public class AvatarServiceImpl implements AvatarService {
         avatarModel.setAnimationControllerType(ctx.getAnimationControllerType());
         avatarModel.setFilePath(avatarFullName.toString());
         avatarModel.setImageFilePath(imageFullName.toString());
+        avatarModel.setUpdateDate(TimeUtils.dateNow());
 
         avatarRepository.save(avatarModel);
     }

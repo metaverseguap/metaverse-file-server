@@ -1,6 +1,8 @@
 package com.metaverse.files.ro.avatar;
 
 
+import java.util.Date;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
@@ -22,6 +24,8 @@ public class AvatarInfoRO {
     private String imageFilePath;
     @Schema(description = "Изображение аватара")
     private byte[] imageData;
+    @Schema(description = "Дата обновления файла")
+    private Date updateDate;
 
     /**
      * @return имя файла аватара
@@ -91,5 +95,19 @@ public class AvatarInfoRO {
      */
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
+    }
+
+    /**
+     * @return дата обновления файла
+     */
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    /**
+     * @param updateDate дата обновления файла
+     */
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 }
