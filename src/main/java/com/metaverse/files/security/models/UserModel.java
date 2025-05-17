@@ -1,6 +1,5 @@
 package com.metaverse.files.security.models;
 
-import com.metaverse.files.models.HostModel;
 import com.metaverse.files.models.RoleModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,10 +46,6 @@ public class UserModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "application_role_id", referencedColumnName = "id")
     private RoleModel role;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "host_id", referencedColumnName = "id")
-    private HostModel hostModel;
 
     /**
      * @return id
@@ -134,20 +129,6 @@ public class UserModel {
      */
     public void setSecurityRole(SecurityRoleModel securityRoleModel) {
         this.securityRole = securityRoleModel;
-    }
-
-    /**
-     * @return хост, которым является пользователь
-     */
-    public HostModel getHostModel() {
-        return hostModel;
-    }
-
-    /**
-     * @param hostModels хост, которым является пользователь
-     */
-    public void setHostModel(HostModel hostModels) {
-        this.hostModel = hostModels;
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.List;
 import com.metaverse.files.contexts.scene.UploadSceneContext;
 import com.metaverse.files.ro.scene.SceneFilePathRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
+import com.metaverse.files.ro.scene.SceneUpdateInfoRO;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
 import com.metaverse.files.utils.exceptions.InvalidRequestStateException;
 import com.metaverse.files.utils.exceptions.ServerFileException;
@@ -17,6 +18,13 @@ import com.metaverse.files.utils.exceptions.UselessOperationException;
  * @since 01.11.2024
  */
 public interface SceneService {
+
+    /**
+     * Получить информацию о времени обновления файлов сцен.
+     *
+     * @return информация о времени обновления файлов сцен
+     */
+    List<SceneUpdateInfoRO> getUpdateInfos();
 
     /**
      * Получить список с информацией о сценах.

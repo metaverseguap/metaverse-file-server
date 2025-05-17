@@ -2,8 +2,11 @@ package com.metaverse.files.services.scene;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.metaverse.files.contexts.scene.UploadSceneContext;
 import com.metaverse.files.converters.scene.SceneFilePathConverter;
@@ -12,6 +15,7 @@ import com.metaverse.files.models.SceneModel;
 import com.metaverse.files.repositories.SceneRepository;
 import com.metaverse.files.ro.scene.SceneFilePathRO;
 import com.metaverse.files.ro.scene.SceneInfoRO;
+import com.metaverse.files.ro.scene.SceneUpdateInfoRO;
 import com.metaverse.files.utils.FIleUtils;
 import com.metaverse.files.utils.TimeUtils;
 import com.metaverse.files.utils.exceptions.DataNotFoundException;
@@ -45,6 +49,27 @@ public class SceneServiceImpl implements SceneService {
 
     @Value("${application.scene.directory}")
     private String sceneDirectory;
+
+    /**
+     * {@literal ConcurrentHashMap<sceneName, updateDate>}
+     */
+    private final ConcurrentHashMap<String, Date> sceneUpdates = new ConcurrentHashMap<>();
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SceneUpdateInfoRO> getUpdateInfos() {
+        List<SceneUpdateInfoRO> updateInfos = new ArrayList<>();
+        for (var sceneUpdate : sceneUpdates.entrySet()) {
+            SceneUpdateInfoRO updateInfo = new SceneUpdateInfoRO();
+            updateInfo.setName(sceneUpdate.getKey());
+            updateInfo.setUpdateDate(sceneUpdate.getValue());
+            updateInfos.add(updateInfo);
+        }
+
+        return updateInfos;
+    }
 
     /**
      * {@inheritDoc}
@@ -132,6 +157,7 @@ public class SceneServiceImpl implements SceneService {
         sceneModel.setImageFilePath(imageFullName.toString());
         sceneModel.setSortIndex(ctx.getSortIndex());
         sceneModel.setUpdateDate(TimeUtils.dateNow());
+        sceneUpdates.put(sceneModel.getName(), sceneModel.getUpdateDate());
 
         sceneRepository.save(sceneModel);
     }
@@ -147,6 +173,7 @@ public class SceneServiceImpl implements SceneService {
 
         deleteFilesFromDisk(sceneFromDB);
 
+        sceneUpdates.remove(sceneFromDB.getName());
         sceneRepository.delete(sceneFromDB);
     }
 
@@ -174,6 +201,7 @@ public class SceneServiceImpl implements SceneService {
         List<SceneModel> scenesFromDB = sceneRepository.findAllByNameIn(sceneNames);
         for (SceneModel sceneFromDB : scenesFromDB) {
             deleteFilesFromDisk(sceneFromDB);
+            sceneUpdates.remove(sceneFromDB.getName());
         }
 
         sceneRepository.deleteAll(scenesFromDB);

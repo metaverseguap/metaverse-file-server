@@ -50,9 +50,6 @@ public class SceneModel {
     @Column(name = "update_date")
     private Date updateDate;
 
-    @OneToMany(mappedBy = "sceneModel", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    private List<HostModel> hostModels;
-
     /**
      * @return id
      */
@@ -163,28 +160,5 @@ public class SceneModel {
      */
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
-    }
-
-    /**
-     * @return список {@link HostModel хостов} данной сцены
-     */
-    public List<HostModel> getHosts() {
-        return hostModels;
-    }
-
-    /**
-     * Добавляет хостов для данной сцены.
-     *
-     * @param hostModels {@link HostModel хосты} данной сцены
-     */
-    public void addHosts(HostModel... hostModels) {
-        if (this.hostModels == null) {
-            this.hostModels = new ArrayList<>();
-        }
-
-        for (HostModel hostModel : hostModels) {
-            this.hostModels.add(hostModel);
-            hostModel.setScene(this);
-        }
     }
 }
