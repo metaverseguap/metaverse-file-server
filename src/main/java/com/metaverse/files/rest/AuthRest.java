@@ -16,6 +16,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,8 +49,8 @@ public class AuthRest {
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя", description = "Позволяет авторизовать пользователя и получить JWT для дальнейших обращений к сервису")
     @ApiResponse(responseCode = "200", description = "Результат авторизации", content = @Content(schema = @Schema(implementation = AuthResultRO.class)))
-    public ResponseEntity<AuthResultRO> login(@RequestBody LoginRequestRO loginRequestRO) {
-        String jwt = authService.login(loginRequestConverter.from(loginRequestRO));
+    public ResponseEntity<AuthResultRO> login(@RequestBody LoginRequestRO loginRequestRO, HttpServletResponse response) {
+        String jwt = authService.login(loginRequestConverter.from(loginRequestRO), response);
 
         return ResponseEntity.ok(authResponse(jwt));
     }
@@ -56,8 +58,8 @@ public class AuthRest {
     @PostMapping("/registration")
     @Operation(summary = "Регистрация пользователя", description = "Позволяет зарегистрировать пользователя и получить JWT для дальнейших обращений к сервису")
     @ApiResponse(responseCode = "200", description = "Результат регистрации", content = @Content(schema = @Schema(implementation = AuthResultRO.class)))
-    public ResponseEntity<AuthResultRO> registration(@RequestBody RegistrationRequestRO registrationRequestRO) {
-        String jwt = authService.registration(registrationRequestConverter.from(registrationRequestRO));
+    public ResponseEntity<AuthResultRO> registration(@RequestBody RegistrationRequestRO registrationRequestRO, HttpServletResponse response) {
+        String jwt = authService.registration(registrationRequestConverter.from(registrationRequestRO), response);
 
         return ResponseEntity.ok(authResponse(jwt));
     }
@@ -68,6 +70,15 @@ public class AuthRest {
         result.setToken(jwt);
 
         return result;
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Обновление JWT", description = "Позволяет обновить JWT без повторной авторизации")
+    @ApiResponse(responseCode = "200", description = "Результат обновления JWT", content = @Content(schema = @Schema(implementation = AuthResultRO.class)))
+    public ResponseEntity<AuthResultRO> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        String jwt = authService.refresh(request, response);
+
+        return ResponseEntity.ok(authResponse(jwt));
     }
 
     @ExceptionHandler

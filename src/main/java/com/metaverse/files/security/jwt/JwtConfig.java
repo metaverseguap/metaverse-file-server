@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
 
+import com.metaverse.files.rest.AuthRest;
 import com.metaverse.files.utils.TimeUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,30 +29,65 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Configuration
 public class JwtConfig {
 
-    private final static String PERMISSIONS = "permissions";
+    /**
+     * Имя заголовка Refresh JSON Web Token-а в Cookie
+     */
+    public static final String REFRESH_TOKEN = "refreshToken";
+
+    private static final String PERMISSIONS = "permissions";
+
 
     // Поля конфигурируются через свойства указанные в файле application.properties
     @Value("${application.jwt.secretKey}")
     private String secretKey;
-    @Value("${application.jwt.tokenExpirationAfterDays}")
-    private Integer tokenExpirationAfterDays;
+    @Value("${application.jwt.token.access.expirationAfterHours}")
+    private Integer accessTokenExpirationAfterHours;
+    @Value("${application.jwt.token.refresh.expirationAfterDays}")
+    private Integer refreshTokenExpirationAfterDays;
+    @Value("${application.jwt.token.refresh.cookiesLifetimeDays}")
+    private Integer cookiesLifetimeDays;
 
     // Обязательно должен быть конструктор по умолчанию
     public JwtConfig() {
     }
 
     /**
-     * Генерирует JSON Web Token на основе данных безопасности о пользователе.
+     * Генерирует Access JSON Web Token на основе данных безопасности о пользователе.
      *
+     * Access JSON Web Token используется для проверки доступа пользователя к endpoint-ам
      * @param userDetails данные безопасности о пользователе
-     * @return JSON Web Token
+     * @return Access JSON Web Token
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
 
         Map<String, Object> claims = getClaimsFromUser(userDetails);
 
         Date creationDate = TimeUtils.dateNow();
-        Date expiredDate = new Date(creationDate.getTime() + TimeUnit.DAYS.toMillis(tokenExpirationAfterDays));
+        Date expiredDate = new Date(creationDate.getTime() + TimeUnit.HOURS.toMillis(accessTokenExpirationAfterHours));
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(creationDate)
+                .setExpiration(expiredDate)
+                .signWith(getRealSecretKey())
+                .compact();
+    }
+
+    /**
+     * Генерирует Refresh JSON Web Token на основе данных безопасности о пользователе.
+     *
+     * Refresh JSON Web Token используется для обновления Access JSON Web Token,
+     * после истечения его срока действия
+     * @param userDetails данные безопасности о пользователе
+     * @return Refresh JSON Web Token
+     */
+    public String generateRefreshToken(UserDetails userDetails) {
+
+        Map<String, Object> claims = getClaimsFromUser(userDetails);
+
+        Date creationDate = TimeUtils.dateNow();
+        Date expiredDate = new Date(creationDate.getTime() + TimeUnit.DAYS.toMillis(refreshTokenExpirationAfterDays));
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -121,5 +159,37 @@ public class JwtConfig {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    /**
+     * Добавить в cookie указанного ответа на запрос новый Refresh JSON Web Token.
+     *
+     * Refresh JSON Web Token используется для обновления Access JSON Web Token,
+     * после истечения его срока действия
+     *
+     * @param userDetails данные безопасности о пользователе
+     * @param response    HttpServletResponse
+     */
+    public void addRefreshTokenCookie(UserDetails userDetails, HttpServletResponse response) {
+        String refreshToken = generateRefreshToken(userDetails);
+        addRefreshTokenCookie(refreshToken, response);
+    }
+
+    /**
+     * Добавить в cookie указанного ответа на запрос Refresh JSON Web Token.
+     *
+     * Refresh JSON Web Token используется для обновления Access JSON Web Token,
+     * после истечения его срока действия
+     *
+     * @param refreshToken Refresh JSON Web Token
+     * @param response     HttpServletResponse
+     */
+    public void addRefreshTokenCookie(String refreshToken, HttpServletResponse response) {
+        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
+        cookie.setHttpOnly(true); // Не доступен из JavaScript
+        cookie.setPath(AuthRest.PATH);
+        cookie.setMaxAge((int) TimeUnit.DAYS.toSeconds(cookiesLifetimeDays));
+
+        response.addCookie(cookie);
     }
 }

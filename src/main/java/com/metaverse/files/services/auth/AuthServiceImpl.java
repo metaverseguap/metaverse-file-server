@@ -1,5 +1,6 @@
 package com.metaverse.files.services.auth;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
@@ -17,6 +18,9 @@ import com.metaverse.files.services.user.UserStatusService;
 import com.metaverse.files.utils.StringUtils;
 import com.metaverse.files.utils.TimeUtils;
 import com.metaverse.files.utils.exceptions.AuthException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,8 +53,8 @@ public class AuthServiceImpl implements AuthService {
      * {@inheritDoc}
      */
     @Override
-    public String login(LoginContext ctx) {
-        UserModel user = getUserFromDB(ctx);
+    public String login(LoginContext ctx, HttpServletResponse response) {
+        UserModel user = getUserFromDB(ctx.getLogin());
 
         if (!user.getSecurityRole().hasFullAccess()) {
             ensureLoginKey(ctx);
@@ -60,11 +64,14 @@ public class AuthServiceImpl implements AuthService {
 
         ensureUserNotActive(user);
 
-        return jwt.generateToken(new SecurityUserDetails(user));
+        SecurityUserDetails userDetails = new SecurityUserDetails(user);
+
+        jwt.addRefreshTokenCookie(userDetails, response);
+
+        return jwt.generateAccessToken(userDetails);
     }
 
-    private UserModel getUserFromDB(LoginContext ctx) {
-        String login = ctx.getLogin();
+    private UserModel getUserFromDB(String login) {
         Optional<UserModel> userFromDB = usersRepository.findByLogin(login);
 
         if (userFromDB.isEmpty()) {
@@ -115,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Transactional
     @Override
-    public String registration(RegistrationContext ctx) {
+    public String registration(RegistrationContext ctx, HttpServletResponse response) {
         ensureLogin(ctx);
 
         ensurePassword(ctx);
@@ -124,9 +131,13 @@ public class AuthServiceImpl implements AuthService {
 
         RegistrationKeyModel regKey = getRegistrationKeyFromDB(ctx);
 
-        UserModel userModel = saveUser(ctx, regKey);
+        UserModel user = saveUser(ctx, regKey);
 
-        return jwt.generateToken(new SecurityUserDetails(userModel));
+        SecurityUserDetails userDetails = new SecurityUserDetails(user);
+
+        jwt.addRefreshTokenCookie(userDetails, response);
+
+        return jwt.generateAccessToken(userDetails);
     }
 
     private static void ensureName(RegistrationContext ctx) {
@@ -192,5 +203,35 @@ public class AuthServiceImpl implements AuthService {
         usersRepository.save(userModel);
 
         return userModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String refresh(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            throw new AuthException("Refresh request does not contain cookies");
+        }
+
+        String refreshToken = Arrays.stream(cookies)
+                .filter(c -> JwtConfig.REFRESH_TOKEN.equals(c.getName()))
+                .findFirst()
+                .map(c -> c.getValue())
+                .orElseThrow(() -> {
+                    String message = String.format("Cookies do not contain %s header", JwtConfig.REFRESH_TOKEN);
+                    return new AuthException(message);
+                });
+
+        String login = jwt.getUsername(refreshToken);
+
+        UserModel user = getUserFromDB(login);
+
+        SecurityUserDetails userDetails = new SecurityUserDetails(user);
+
+        jwt.addRefreshTokenCookie(userDetails, response);
+
+        return jwt.generateAccessToken(userDetails);
     }
 }
