@@ -31,9 +31,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtRequestFilter.class);
 
-    @Value("${application.jwt.authHeader}")
+    @Value("${app.jwt.authHeader}")
     private String authorizationHeaderName = "";
-    @Value("${application.jwt.tokenPrefix}")
+    @Value("${app.jwt.tokenPrefix}")
     private String authorizationPrefix = "";
 
     @Autowired

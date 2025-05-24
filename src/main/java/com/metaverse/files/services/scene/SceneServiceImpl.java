@@ -47,7 +47,7 @@ public class SceneServiceImpl implements SceneService {
     @Autowired
     private SceneFilePathConverter sceneConverter;
 
-    @Value("${application.scene.directory}")
+    @Value("${app.scene.directory}")
     private String sceneDirectory;
 
     /**

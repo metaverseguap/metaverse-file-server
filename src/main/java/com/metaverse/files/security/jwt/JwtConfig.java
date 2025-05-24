@@ -38,13 +38,13 @@ public class JwtConfig {
 
 
     // Поля конфигурируются через свойства указанные в файле application.properties
-    @Value("${application.jwt.secretKey}")
+    @Value("${app.jwt.secretKey}")
     private String secretKey;
-    @Value("${application.jwt.token.access.expirationAfterHours}")
+    @Value("${app.jwt.token.access.expirationAfterHours}")
     private Integer accessTokenExpirationAfterHours;
-    @Value("${application.jwt.token.refresh.expirationAfterDays}")
+    @Value("${app.jwt.token.refresh.expirationAfterDays}")
     private Integer refreshTokenExpirationAfterDays;
-    @Value("${application.jwt.token.refresh.cookiesLifetimeDays}")
+    @Value("${app.jwt.token.refresh.cookiesLifetimeDays}")
     private Integer cookiesLifetimeDays;
 
     // Обязательно должен быть конструктор по умолчанию
