@@ -6,7 +6,13 @@ plugins {
 }
 
 group = 'com.metaverse'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0-SNAPSHOT'
+
+processResources {
+	filesMatching("application.properties") {
+		expand(version: project.version)
+	}
+}
 
 java {
 	toolchain {

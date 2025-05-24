@@ -39,7 +39,7 @@ public class AvatarServiceImpl implements AvatarService {
     @Autowired
     private AvatarFilePathConverter avatarConverter;
 
-    @Value("${application.avatar.directory}")
+    @Value("${app.avatar.directory}")
     private String avatarDirectory;
 
     /**

@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserStatusServiceConcurrentMapImpl implements UserStatusService {
 
-    @Value("${application.user.status.expirationAfterSeconds}")
+    @Value("${app.user.status.expirationAfterSeconds}")
     private Integer statusExpirationAfterSeconds;
 
     private final ConcurrentHashMap<String, Long> onlineUsers = new ConcurrentHashMap<>();
