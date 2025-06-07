@@ -80,7 +80,7 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     private static void ensureAvatar(UploadAvatarContext ctx) {
-        if (!ctx.hasScene()) {
+        if (!ctx.hasAvatar()) {
             throw new InvalidRequestStateException("Avatar file is empty");
         }
     }
