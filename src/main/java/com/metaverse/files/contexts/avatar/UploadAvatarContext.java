@@ -49,7 +49,7 @@ public class UploadAvatarContext {
      *
      * @return true, если в контексте есть файл аватара
      */
-    public boolean hasScene() {
+    public boolean hasAvatar() {
         return avatar != null && !avatar.isEmpty();
     }
 
